@@ -2,6 +2,6 @@ flask
 werkzeug
 gunicorn
 opencv-python
-numpy
-pillow
-tensorflow==2.15.0
+numpy==2.3.4
+pillow==12.0.0
+tensorflow==2.20.0
