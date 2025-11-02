@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environment
+.venv/
+env/
+venv/
+ENV/
+
+# Jupyter or temp files
+.ipynb_checkpoints
+*.sqlite3
+*.db
+
+# Model and dataset files
+*.h5
+*.pkl
+*.npy
+*.npz
+*.csv
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Render / deployment caches
+*.egg-info/
+build/
+dist/

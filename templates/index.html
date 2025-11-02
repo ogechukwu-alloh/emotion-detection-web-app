@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emotion Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Emotion Detection</h1>
+    <p>Upload an image or use your webcam to detect emotion in real time.</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for m in messages %}<p>{{ m }}</p>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form id="uploadForm" action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" class="card">
+      <input type="hidden" name="source" value="upload">
+      <label>Your Name</label>
+      <input type="text" name="name" placeholder="Enter your name" required>
+      <label>Choose Image</label>
+      <input type="file" name="image" accept="image/*" required>
+      <button type="submit">Predict from Upload</button>
+    </form>
+
+    <div class="divider"><span>OR</span></div>
+
+    <div class="card">
+      <label>Your Name</label>
+      <input type="text" id="liveName" placeholder="Enter your name">
+      <div class="video-wrap">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+      </div>
+      <div class="actions">
+        <button id="startBtn">Start Camera</button>
+        <button id="snapBtn">Capture & Predict</button>
+      </div>
+      <form id="liveForm" action="{{ url_for('predict') }}" method="POST">
+        <input type="hidden" name="source" value="live">
+        <input type="hidden" name="name" id="liveNameHidden">
+        <input type="hidden" name="snapshot" id="snapshotInput">
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const startBtn = document.getElementById('startBtn');
+    const snapBtn = document.getElementById('snapBtn');
+    const liveForm = document.getElementById('liveForm');
+    const snapshotInput = document.getElementById('snapshotInput');
+    const liveName = document.getElementById('liveName');
+    const liveNameHidden = document.getElementById('liveNameHidden');
+
+    let stream = null;
+
+    startBtn.addEventListener('click', async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        video.srcObject = stream;
+      } catch (e) {
+        alert('Could not access camera: ' + e.message);
+      }
+    });
+
+    snapBtn.addEventListener('click', () => {
+      if (!video.srcObject) {
+        alert('Start the camera first.');
+        return;
+      }
+      const w = video.videoWidth;
+      const h = video.videoHeight;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, w, h);
+      const dataURL = canvas.toDataURL('image/png');
+      snapshotInput.value = dataURL;
+      liveNameHidden.value = liveName.value || 'Anonymous';
+      liveForm.submit();
+    });
+  </script>
+</body>
+</html>

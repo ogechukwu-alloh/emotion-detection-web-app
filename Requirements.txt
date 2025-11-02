@@ -1,0 +1,7 @@
+flask
+werkzeug
+gunicorn
+opencv-python
+numpy
+pillow
+tensorflow==2.15.0
